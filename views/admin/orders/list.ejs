@@ -1,0 +1,82 @@
+<%- include('../../partials/header') %>
+
+<div class="container">
+  <div class="admin-page">
+    <aside class="admin-sidebar">
+      <h2>Admin Panel</h2>
+      <nav class="admin-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/orders" class="active">Orders</a>
+        <a href="/admin/customers">Customers</a>
+        <a href="/admin/reviews">Reviews</a>
+      </nav>
+    </aside>
+
+    <div class="admin-content">
+      <h1>Manage Orders</h1>
+
+      <div class="filters">
+        <a href="/admin/orders" class="filter-btn <%= !currentStatus ? 'active' : '' %>">All</a>
+        <a href="/admin/orders?status=pending" class="filter-btn <%= currentStatus === 'pending' ? 'active' : '' %>">Pending</a>
+        <a href="/admin/orders?status=processing" class="filter-btn <%= currentStatus === 'processing' ? 'active' : '' %>">Processing</a>
+        <a href="/admin/orders?status=shipped" class="filter-btn <%= currentStatus === 'shipped' ? 'active' : '' %>">Shipped</a>
+        <a href="/admin/orders?status=delivered" class="filter-btn <%= currentStatus === 'delivered' ? 'active' : '' %>">Delivered</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Order #</th>
+              <th>Customer</th>
+              <th>Total</th>
+              <th>Payment</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% orders.forEach(order => { %>
+              <tr>
+                <td><%= order.orderNumber %></td>
+                <td><%= order.user.name %></td>
+                <td>$<%= order.total.toFixed(2) %></td>
+                <td><span class="status-badge status-<%= order.paymentStatus %>"><%= order.paymentStatus %></span></td>
+                <td><span class="status-badge status-<%= order.status %>"><%= order.status %></span></td>
+                <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                <td>
+                  <a href="/admin/orders/<%= order._id %>" class="btn-small">View</a>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+
+      <% if (totalPages > 1) { %>
+        <div class="pagination">
+          <% if (currentPage > 1) { %>
+            <a href="?page=<%= currentPage - 1 %><%= currentStatus ? '&status=' + currentStatus : '' %>" class="btn">Previous</a>
+          <% } %>
+
+          <% for (let i = 1; i <= totalPages; i++) { %>
+            <% if (i === currentPage) { %>
+              <span class="current-page"><%= i %></span>
+            <% } else if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) { %>
+              <a href="?page=<%= i %><%= currentStatus ? '&status=' + currentStatus : '' %>"><%= i %></a>
+            <% } %>
+          <% } %>
+
+          <% if (currentPage < totalPages) { %>
+            <a href="?page=<%= currentPage + 1 %><%= currentStatus ? '&status=' + currentStatus : '' %>" class="btn">Next</a>
+          <% } %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

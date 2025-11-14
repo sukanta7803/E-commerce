@@ -1,0 +1,124 @@
+<%- include('../../partials/header') %>
+
+<div class="container">
+    <div class="admin-page">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>My Products (<%= typeof totalProducts !== 'undefined' ? totalProducts : 0 %>)</h1>
+                <a href="/seller/products/new" class="btn btn-primary">Add New Product</a>
+            </div>
+
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="alert" style="background-color: #d1fae5; color: #065f46; padding: 12px; margin-bottom: 20px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+
+            <!-- Products Table -->
+            <div class="dashboard-section">
+                <% if (typeof products !== 'undefined' && products && products.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Product Name</th>
+                                    <th>SKU</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Status</th>
+                                    <th>Sales</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% products.forEach(product => { %>
+                                    <tr>
+                                        <td>
+                                            <% if (product.images && product.images.length > 0) { %>
+                                                <img src="<%= product.images[0].url %>" alt="<%= product.images[0].alt %>" class="table-image">
+                                            <% } else { %>
+                                                <div class="table-image" style="background: #f1f5f9; display: flex; align-items: center; justify-content: center; color: #64748b;">
+                                                    No Image
+                                                </div>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <strong><%= product.name %></strong>
+                                            <% if (product.isFeatured) { %>
+                                                <span style="color: var(--success-color); font-size: 12px;">★ Featured</span>
+                                            <% } %>
+                                        </td>
+                                        <td><%= product.sku %></td>
+                                        <td>
+                                            <% if (product.salePrice) { %>
+                                                <span style="text-decoration: line-through; color: var(--secondary-color);">
+                                                    $<%= product.price.toFixed(2) %>
+                                                </span>
+                                                <span style="color: var(--danger-color); font-weight: bold;">
+                                                    $<%= product.salePrice.toFixed(2) %>
+                                                </span>
+                                            <% } else { %>
+                                                $<%= product.price.toFixed(2) %>
+                                            <% } %>
+                                        </td>
+                                        <td class="<%= product.stock <= product.lowStockThreshold ? 'low-stock' : '' %>">
+                                            <%= product.stock %>
+                                        </td>
+                                        <td>
+                                            <% if (product.isActive) { %>
+                                                <span class="status-badge status-active">Active</span>
+                                            <% } else { %>
+                                                <span class="status-badge status-inactive">Inactive</span>
+                                            <% } %>
+                                        </td>
+                                        <td><%= product.salesCount || 0 %></td>
+                                        <td>
+                                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                                <a href="/products/<%= product.slug %>" target="_blank" class="btn-small" style="background: var(--secondary-color);">View</a>
+                                                <a href="/seller/products/<%= product._id %>/edit" class="btn-small">Edit</a>
+                                                <form action="/seller/products/<%= product._id %>/delete" method="POST" style="display: inline;">
+                                                    <button type="submit" class="btn-small btn-danger" onclick="return confirm('Are you sure you want to delete this product?')">Delete</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+                        <div class="pagination">
+                            <% if (typeof currentPage !== 'undefined' && currentPage > 1) { %>
+                                <a href="?page=<%= currentPage - 1 %>">Previous</a>
+                            <% } %>
+                            
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                                <% if (i === currentPage) { %>
+                                    <span class="current-page"><%= i %></span>
+                                <% } else { %>
+                                    <a href="?page=<%= i %>"><%= i %></a>
+                                <% } %>
+                            <% } %>
+                            
+                            <% if (typeof currentPage !== 'undefined' && currentPage < totalPages) { %>
+                                <a href="?page=<%= currentPage + 1 %>">Next</a>
+                            <% } %>
+                        </div>
+                    <% } %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 40px;">
+                            <p>No products found.</p>
+                            <a href="/seller/products/new" class="btn btn-primary">Add Your First Product</a>
+                        </td>
+                    </tr>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,59 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div class="order-confirmation">
+    <div class="success-icon">✓</div>
+    <h1>Order Placed Successfully!</h1>
+    <p>Thank you for your order. Your order number is: <strong><%= order.orderNumber %></strong></p>
+
+    <div class="order-details">
+      <h2>Order Details</h2>
+      <div class="order-info">
+        <div class="info-section">
+          <h3>Shipping Address</h3>
+          <p><%= order.shippingAddress.fullName %></p>
+          <p><%= order.shippingAddress.addressLine1 %></p>
+          <% if (order.shippingAddress.addressLine2) { %>
+            <p><%= order.shippingAddress.addressLine2 %></p>
+          <% } %>
+          <p><%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.zipCode %></p>
+          <p><%= order.shippingAddress.phone %></p>
+        </div>
+
+        <div class="info-section">
+          <h3>Payment Method</h3>
+          <p><%= order.paymentMethod.replace('_', ' ').toUpperCase() %></p>
+        </div>
+
+        <div class="info-section">
+          <h3>Order Summary</h3>
+          <p>Subtotal: $<%= order.subtotal.toFixed(2) %></p>
+          <p>Shipping: $<%= order.shippingCost.toFixed(2) %></p>
+          <p>Tax: $<%= order.tax.toFixed(2) %></p>
+          <p><strong>Total: $<%= order.total.toFixed(2) %></strong></p>
+        </div>
+      </div>
+
+      <div class="order-items">
+        <h3>Items</h3>
+        <% order.items.forEach(item => { %>
+          <div class="order-item">
+            <img src="<%= item.product.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= item.name %>">
+            <div>
+              <p><%= item.name %></p>
+              <p>Quantity: <%= item.quantity %></p>
+              <p>Price: $<%= item.price.toFixed(2) %></p>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+    </div>
+
+    <div class="confirmation-actions">
+      <a href="/orders/<%= order._id %>" class="btn btn-primary">View Order Details</a>
+      <a href="/products" class="btn btn-secondary">Continue Shopping</a>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

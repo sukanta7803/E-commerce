@@ -1,0 +1,185 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div class="product-detail">
+    <div class="product-images">
+      <div class="main-image">
+        <img src="<%= product.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= product.name %>" id="mainImage">
+      </div>
+      <% if (product.images.length > 1) { %>
+        <div class="image-thumbnails">
+          <% product.images.forEach((image, index) => { %>
+            <img src="<%= image.url %>" alt="<%= image.alt %>" onclick="changeMainImage('<%= image.url %>')">
+          <% }) %>
+        </div>
+      <% } %>
+    </div>
+
+    <div class="product-details">
+      <h1><%= product.name %></h1>
+      <p class="product-category">Category: <%= product.category && product.category.name ? product.category.name : 'Uncategorized' %></p>
+      <% if (product.brand) { %>
+        <p class="product-brand">Brand: <%= product.brand %></p>
+      <% } %>
+
+      <div class="product-rating">
+        <span class="stars">★★★★★</span>
+        <span class="rating-text"><%= product.averageRating || 0 %> (<%= product.reviewCount || 0 %> reviews)</span>
+      </div>
+
+      <div class="product-price-section">
+        <% if (product.salePrice) { %>
+          <span class="original-price">$<%= product.price.toFixed(2) %></span>
+          <span class="sale-price">$<%= product.salePrice.toFixed(2) %></span>
+          <span class="savings">Save $<%= (product.price - product.salePrice).toFixed(2) %></span>
+        <% } else { %>
+          <span class="price">$<%= product.price.toFixed(2) %></span>
+        <% } %>
+      </div>
+
+      <div class="product-description">
+        <h3>Description</h3>
+        <p><%= product.description %></p>
+      </div>
+
+      <% if (product.specifications && product.specifications.length > 0) { %>
+        <div class="product-specifications">
+          <h3>Specifications</h3>
+          <ul>
+            <% product.specifications.forEach(spec => { %>
+              <li><strong><%= spec.key %>:</strong> <%= spec.value %></li>
+            <% }) %>
+          </ul>
+        </div>
+      <% } %>
+
+      <div class="product-stock">
+        <% if (product.stock > 0) { %>
+          <p class="in-stock">In Stock (<%= product.stock %> available)</p>
+        <% } else { %>
+          <p class="out-of-stock">Out of Stock</p>
+        <% } %>
+      </div>
+
+      <div class="product-actions">
+        <div class="quantity-selector">
+          <label>Quantity:</label>
+          <input type="number" id="quantity" value="1" min="1" max="<%= product.stock %>">
+        </div>
+        <% if (product.stock > 0) { %>
+          <button class="btn btn-primary" onclick="addToCart('<%= product._id %>')">Add to Cart</button>
+        <% } %>
+        <% if (user) { %>
+          <button class="btn btn-secondary" onclick="addToWishlist('<%= product._id %>')">Add to Wishlist</button>
+        <% } %>
+      </div>
+    </div>
+  </div>
+
+  <% if (frequentlyBought && frequentlyBought.length > 0) { %>
+    <section class="related-section">
+      <h2>Frequently Bought Together</h2>
+      <div class="products-grid">
+        <% frequentlyBought.forEach(prod => { %>
+          <div class="product-card">
+            <a href="/products/<%= prod.slug %>">
+              <div class="product-image">
+                <img src="<%= prod.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= prod.name %>">
+              </div>
+              <div class="product-info">
+                <h3><%= prod.name %></h3>
+                <div class="product-price">
+                  <span class="price">$<%= (prod.salePrice || prod.price).toFixed(2) %></span>
+                </div>
+              </div>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+
+  <section class="reviews-section">
+    <h2>Customer Reviews</h2>
+
+    <% if (user) { %>
+      <div class="review-form">
+        <h3>Write a Review</h3>
+        <form onsubmit="submitReview(event, '<%= product._id %>')">
+          <div class="form-group">
+            <label>Rating:</label>
+            <select name="rating" required>
+              <option value="5">5 Stars</option>
+              <option value="4">4 Stars</option>
+              <option value="3">3 Stars</option>
+              <option value="2">2 Stars</option>
+              <option value="1">1 Star</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Title:</label>
+            <input type="text" name="title" required>
+          </div>
+          <div class="form-group">
+            <label>Comment:</label>
+            <textarea name="comment" rows="4" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Review</button>
+        </form>
+      </div>
+    <% } %>
+
+    <div class="reviews-list">
+      <% if (!reviews || reviews.length === 0) { %>
+        <p>No reviews yet. Be the first to review this product!</p>
+      <% } else { %>
+        <% reviews.forEach(review => { %>
+          <div class="review-item">
+            <div class="review-header">
+              <strong><%= review.user.name %></strong>
+              <span class="review-rating">
+                <% for (let i = 0; i < review.rating; i++) { %>★<% } %>
+                <% for (let i = review.rating; i < 5; i++) { %>☆<% } %>
+              </span>
+              <% if (review.isVerifiedPurchase) { %>
+                <span class="verified-badge">Verified Purchase</span>
+              <% } %>
+            </div>
+            <h4><%= review.title %></h4>
+            <p><%= review.comment %></p>
+            <div class="review-footer">
+              <span class="review-date"><%= new Date(review.createdAt).toLocaleDateString() %></span>
+              <button onclick="markHelpful('<%= review._id %>')">Helpful (<%= review.helpful %>)</button>
+            </div>
+          </div>
+        <% }) %>
+      <% } %>
+    </div>
+  </section>
+
+  <% if (relatedProducts && relatedProducts.length > 0) { %>
+    <section class="related-section">
+      <h2>Related Products</h2>
+      <div class="products-grid">
+        <% relatedProducts.forEach(prod => { %>
+          <div class="product-card">
+            <a href="/products/<%= prod.slug %>">
+              <div class="product-image">
+                <img src="<%= prod.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= prod.name %>">
+              </div>
+              <div class="product-info">
+                <h3><%= prod.name %></h3>
+                <div class="product-price">
+                  <span class="price">$<%= (prod.salePrice || prod.price).toFixed(2) %></span>
+                </div>
+              </div>
+            </a>
+            <button class="btn btn-primary add-to-cart-btn" data-product-id="<%= prod._id %>">Add to Cart</button>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

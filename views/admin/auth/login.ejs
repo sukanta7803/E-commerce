@@ -1,0 +1,28 @@
+<%- include('../../partials/header') %>
+
+<div class="container">
+  <div class="auth-form">
+    <div style="display:flex; gap:8px; margin-bottom:12px;">
+      <a href="/admin/login" class="btn btn-secondary" style="padding:6px 10px; font-size:0.9rem;">Admin</a>
+      <a href="/auth/login" class="btn btn-secondary" style="padding:6px 10px; font-size:0.9rem;">General</a>
+    </div>
+
+    <h1>Admin Login</h1>
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+    <form action="/admin/login" method="POST">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

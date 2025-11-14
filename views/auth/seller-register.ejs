@@ -1,0 +1,100 @@
+<%- include('../partials/header') %>
+<div style="display:flex; gap:8px; margin-bottom:12px;margin-left:10%">
+      <a href="/auth/sellerRegister" class="btn btn-secondary" style="padding:6px 10px; font-size:0.9rem;">Seller</a>
+      <a href="/auth/register" class="btn btn-secondary" style="padding:6px 10px; font-size:0.9rem;">General</a>
+    </div>
+<div class="container">
+  <div class="auth-form">
+    <h1>Business Registration</h1>
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+    <form action="/auth/sellerRegister" method="POST">
+      <!-- Personal Information -->
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name" value="<%= formData && formData.name ? formData.name : '' %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" value="<%= formData && formData.email ? formData.email : '' %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" required minlength="6">
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" value="<%= formData && formData.phone ? formData.phone : '' %>">
+      </div>
+
+      <!-- Business Information -->
+      <div class="form-group">
+        <label for="businessName">Business Name *</label>
+        <input type="text" id="businessName" name="businessName" value="<%= formData && formData.businessName ? formData.businessName : '' %>" required>
+        <small style="color: #666; font-size: 0.9rem;">This will be displayed to customers</small>
+      </div>
+
+      <!-- Business Address (Optional) -->
+      <div class="form-group">
+        <label style="font-weight: bold; color: #333; margin-bottom: 10px; display: block;">Business Address (Optional)</label>
+        <div style="border: 1px solid #ddd; padding: 15px; border-radius: 4px; background-color: #f9f9f9;">
+          <div class="form-group">
+            <label for="businessAddressLine1">Address Line 1</label>
+            <input type="text" id="businessAddressLine1" name="businessAddressLine1" value="<%= formData && formData.businessAddressLine1 ? formData.businessAddressLine1 : '' %>">
+          </div>
+          
+          <div class="form-group">
+            <label for="businessAddressLine2">Address Line 2</label>
+            <input type="text" id="businessAddressLine2" name="businessAddressLine2" value="<%= formData && formData.businessAddressLine2 ? formData.businessAddressLine2 : '' %>">
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex: 1;">
+              <label for="businessCity">City</label>
+              <input type="text" id="businessCity" name="businessCity" value="<%= formData && formData.businessCity ? formData.businessCity : '' %>">
+            </div>
+            
+            <div class="form-group" style="flex: 1;">
+              <label for="businessState">State/Province</label>
+              <input type="text" id="businessState" name="businessState" value="<%= formData && formData.businessState ? formData.businessState : '' %>">
+            </div>
+          </div>
+          
+          <div style="display: flex; gap: 10px;">
+            <div class="form-group" style="flex: 1;">
+              <label for="businessZipCode">Postal Code</label>
+              <input type="text" id="businessZipCode" name="businessZipCode" value="<%= formData && formData.businessZipCode ? formData.businessZipCode : '' %>">
+            </div>
+            
+            <div class="form-group" style="flex: 1;">
+              <label for="businessCountry">Country</label>
+              <input type="text" id="businessCountry" name="businessCountry" value="<%= formData && formData.businessCountry ? formData.businessCountry : 'USA' %>">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Terms and Conditions -->
+      <div class="form-group">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms" style="margin: 0;">I agree to the Terms and Conditions *</label>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Register Business Account</button>
+    </form>
+    <p class="auth-link">Already have an account? <a href="/auth/login-seller">Login here</a></p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

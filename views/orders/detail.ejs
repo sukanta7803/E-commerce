@@ -1,0 +1,110 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div class="order-detail">
+    <h1>Order Details</h1>
+    <div class="order-number">Order #<%= order.orderNumber %></div>
+
+    <div class="order-status-tracking">
+      <div class="status-timeline">
+        <div class="status-step <%= ['pending', 'processing', 'shipped', 'delivered'].indexOf(order.status) >= 0 ? 'completed' : '' %>">
+          <div class="step-icon">1</div>
+          <div class="step-label">Pending</div>
+        </div>
+        <div class="status-step <%= ['processing', 'shipped', 'delivered'].indexOf(order.status) >= 0 ? 'completed' : '' %>">
+          <div class="step-icon">2</div>
+          <div class="step-label">Processing</div>
+        </div>
+        <div class="status-step <%= ['shipped', 'delivered'].indexOf(order.status) >= 0 ? 'completed' : '' %>">
+          <div class="step-icon">3</div>
+          <div class="step-label">Shipped</div>
+        </div>
+        <div class="status-step <%= order.status === 'delivered' ? 'completed' : '' %>">
+          <div class="step-icon">4</div>
+          <div class="step-label">Delivered</div>
+        </div>
+      </div>
+      <% if (order.trackingNumber) { %>
+        <p class="tracking-number">Tracking Number: <strong><%= order.trackingNumber %></strong></p>
+      <% } %>
+    </div>
+
+    <div class="order-content">
+      <div class="order-main">
+        <h2>Items</h2>
+        <div class="order-items">
+          <% order.items.forEach(item => { %>
+            <div class="order-item">
+              <img src="<%= item.product?.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= item.name %>">
+              <div class="item-info">
+                <h3><%= item.name %></h3>
+                <p>Quantity: <%= item.quantity %></p>
+                <p>Price: $<%= item.price.toFixed(2) %></p>
+              </div>
+              <div class="item-total">
+                $<%= (item.price * item.quantity).toFixed(2) %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+
+        <div class="order-history">
+          <h3>Order History</h3>
+          <% order.statusHistory.forEach(history => { %>
+            <div class="history-item">
+              <strong><%= new Date(history.timestamp).toLocaleString() %></strong>
+              <p><%= history.note %></p>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+
+      <div class="order-sidebar">
+        <div class="info-box">
+          <h3>Shipping Address</h3>
+          <p><%= order.shippingAddress.fullName %></p>
+          <p><%= order.shippingAddress.addressLine1 %></p>
+          <% if (order.shippingAddress.addressLine2) { %>
+            <p><%= order.shippingAddress.addressLine2 %></p>
+          <% } %>
+          <p><%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.zipCode %></p>
+          <p><%= order.shippingAddress.phone %></p>
+        </div>
+
+        <div class="info-box">
+          <h3>Payment Method</h3>
+          <p><%= order.paymentMethod.replace('_', ' ').toUpperCase() %></p>
+          <p>Status: <%= order.paymentStatus.toUpperCase() %></p>
+        </div>
+
+        <div class="info-box">
+          <h3>Order Summary</h3>
+          <div class="summary-row">
+            <span>Subtotal:</span>
+            <span>$<%= order.subtotal.toFixed(2) %></span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping:</span>
+            <span>$<%= order.shippingCost.toFixed(2) %></span>
+          </div>
+          <div class="summary-row">
+            <span>Tax:</span>
+            <span>$<%= order.tax.toFixed(2) %></span>
+          </div>
+          <% if (order.discount > 0) { %>
+            <div class="summary-row">
+              <span>Discount:</span>
+              <span>-$<%= order.discount.toFixed(2) %></span>
+            </div>
+          <% } %>
+          <div class="summary-row total">
+            <span>Total:</span>
+            <span>$<%= order.total.toFixed(2) %></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

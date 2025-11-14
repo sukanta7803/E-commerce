@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Seller Panel</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .seller-header {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .seller-nav {
+            background: #f1f5f9;
+            padding: 15px 0;
+            border-top: 1px solid #cbd5e1;
+        }
+        .seller-nav ul {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+            margin: 0;
+            padding: 0 20px;
+        }
+        .seller-nav a {
+            text-decoration: none;
+            color: #475569;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        .seller-nav a:hover, .seller-nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Seller Header -->
+        <header class="seller-header">
+            <div class="header-top">
+                <div class="logo">
+                    <a href="/seller/dashboard">ShopEase Seller</a>
+                </div>
+                <div class="header-actions">
+                    <span>Welcome, <%= userName %>!</span>
+                    <div class="user-menu">
+                        <a href="#" class="action-link">Account ▼</a>
+                        <div class="dropdown">
+                            <a href="/seller/profile">Profile</a>
+                            <a href="/seller/dashboard">Dashboard</a>
+                            <a href="/">Store Front</a>
+                            <a href="/auth/logout">Logout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Seller Navigation -->
+            <nav class="seller-nav">
+                <ul>
+                    <li><a href="/seller/dashboard">Dashboard</a></li>
+                    <li><a href="/seller/products">Products</a></li>
+                    <li><a href="/seller/orders">Orders</a></li>
+                    <li><a href="/seller/reports">Reports</a></li>
+                    <li><a href="/seller/profile" class="active">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Flash Messages -->
+            <% if (message) { %>
+                <div class="alert" style="background-color: #d1fae5; color: #065f46; padding: 12px; margin-bottom: 20px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+            
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <div class="admin-page">
+                <div class="admin-content">
+                    <div class="admin-header">
+                        <h1>Seller Profile</h1>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Personal Information</h2>
+                        <form id="profileForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name">Full Name *</label>
+                                    <input type="text" id="name" name="name" required value="<%= user.name %>">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" name="email" required value="<%= user.email %>" readonly style="background: #f1f5f9;">
+                                    <small>Email cannot be changed</small>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" name="phone" value="<%= user.phone || '' %>">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="businessName">Business Name *</label>
+                                <input type="text" id="businessName" name="businessName" required value="<%= user.businessName || '' %>">
+                            </div>
+
+                            <% if (user.businessAddress) { %>
+                                <div class="form-group">
+                                    <label style="font-weight: bold;">Business Address</label>
+                                    <div style="background: #f8fafc; padding: 15px; border-radius: 8px;">
+                                        <p><%= user.businessAddress.addressLine1 %></p>
+                                        <% if (user.businessAddress.addressLine2) { %>
+                                            <p><%= user.businessAddress.addressLine2 %></p>
+                                        <% } %>
+                                        <p><%= user.businessAddress.city %>, <%= user.businessAddress.state %> <%= user.businessAddress.zipCode %></p>
+                                        <p><%= user.businessAddress.country %></p>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <div class="form-actions">
+                                <button type="submit" class="btn btn-primary">Update Profile</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Account Information</h2>
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 8px;">
+                            <p><strong>Account Type:</strong> Seller</p>
+                            <p><strong>Member Since:</strong> <%= new Date(user.createdAt).toLocaleDateString() %></p>
+                            <p><strong>Status:</strong> 
+                                <span style="background: #d1fae5; color: #065f46; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600;">Active</span>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h2>Quick Links</h2>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <a href="/seller/dashboard" class="btn btn-secondary">Dashboard</a>
+                            <a href="/seller/products" class="btn btn-secondary">Manage Products</a>
+                            <a href="/seller/orders" class="btn btn-secondary">View Orders</a>
+                            <a href="/seller/reports" class="btn btn-secondary">Sales Reports</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    document.getElementById('profileForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+        
+        try {
+            const response = await fetch('/seller/profile/update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                alert('Profile updated successfully!');
+                window.location.reload();
+            } else {
+                alert('Error: ' + result.message);
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while updating profile.');
+        }
+    });
+    </script>
+</body>
+</html>

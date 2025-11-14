@@ -1,0 +1,83 @@
+<%- include('../partials/header') %>
+
+<div class="admin-page">
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1>My Orders (<%= totalOrders %>)</h1>
+        </div>
+
+        <div class="dashboard-section">
+            <% if (orders && orders.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer</th>
+                                <th>Date</th>
+                                <th>Items</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orders.forEach(order => { %>
+                                <tr>
+                                    <td><strong><%= order.orderNumber %></strong></td>
+                                    <td>
+                                        <%= order.user.name %><br>
+                                        <small><%= order.user.email %></small>
+                                    </td>
+                                    <td><%= order.createdAt.toLocaleDateString() %></td>
+                                    <td>
+                                        <% order.items.forEach(item => { %>
+                                            <div><%= item.quantity %>x <%= item.name %></div>
+                                        <% }) %>
+                                    </td>
+                                    <td>$<%= order.total.toFixed(2) %></td>
+                                    <td>
+                                        <span class="status-badge status-<%= order.status %>">
+                                            <%= order.status %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <a href="/seller/orders/<%= order._id %>" class="btn-small">View Details</a>
+                                    </td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <% if (totalPages > 1) { %>
+                    <div class="pagination">
+                        <% if (currentPage > 1) { %>
+                            <a href="?page=<%= currentPage - 1 %>">Previous</a>
+                        <% } %>
+                        
+                        <% for (let i = 1; i <= totalPages; i++) { %>
+                            <% if (i === currentPage) { %>
+                                <span class="current-page"><%= i %></span>
+                            <% } else { %>
+                                <a href="?page=<%= i %>"><%= i %></a>
+                            <% } %>
+                        <% } %>
+                        
+                        <% if (currentPage < totalPages) { %>
+                            <a href="?page=<%= currentPage + 1 %>">Next</a>
+                        <% } %>
+                    </div>
+                <% } %>
+            <% } else { %>
+                <div style="text-align: center; padding: 40px;">
+                    <p>No orders found.</p>
+                    <p>Orders will appear here when customers purchase your products.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

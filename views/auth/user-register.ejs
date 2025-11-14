@@ -1,0 +1,51 @@
+<%- include('../partials/header') %>
+<div style="display:flex; gap:8px; margin-bottom:12px;margin-left:10%">
+      <a href="/auth/sellerRegister" class="btn btn-secondary" style="padding:6px 10px; font-size:0.9rem;">Seller</a>
+      <a href="/auth/register" class="btn btn-primary" style="padding:6px 10px; font-size:0.9rem;">General</a>
+    </div>
+<div class="container">
+  <div class="auth-form">
+    <h1>Customer Registration</h1>
+    <% if (error) { %>
+      <div class="alert alert-error"><%= error %></div>
+    <% } %>
+    <form action="/auth/register" method="POST">
+      <div class="form-group">
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name" value="<%= formData && formData.name ? formData.name : '' %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input type="email" id="email" name="email" value="<%= formData && formData.email ? formData.email : '' %>" required>
+      </div>
+      
+      <div class="form-group">
+        <label for="password">Password *</label>
+        <input type="password" id="password" name="password" required minlength="6">
+      </div>
+      
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password *</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required minlength="6">
+      </div>
+      
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" value="<%= formData && formData.phone ? formData.phone : '' %>">
+      </div>
+      
+      <div class="form-group">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <input type="checkbox" id="terms" name="terms" required>
+          <label for="terms" style="margin: 0;">I agree to the Terms and Conditions *</label>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+    <p class="auth-link">Already have an account? <a href="/auth/login">Login here</a></p>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

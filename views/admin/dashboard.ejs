@@ -1,0 +1,120 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <div class="admin-page">
+    <aside class="admin-sidebar">
+      <h2>Admin Panel</h2>
+      <nav class="admin-nav">
+        <a href="/admin/dashboard" class="active">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/categories">Categories</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/customers">Customers</a>
+        <a href="/admin/reviews">Reviews</a>
+      </nav>
+    </aside>
+
+    <div class="admin-content">
+      <h1>Dashboard</h1>
+
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Products</h3>
+          <p class="stat-number"><%= stats.totalProducts %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Orders</h3>
+          <p class="stat-number"><%= stats.totalOrders %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Customers</h3>
+          <p class="stat-number"><%= stats.totalCustomers %></p>
+        </div>
+        <div class="stat-card">
+          <h3>Total Revenue</h3>
+          <p class="stat-number">$<%= stats.totalRevenue.toFixed(2) %></p>
+        </div>
+      </div>
+
+      <div class="dashboard-sections">
+        <section class="dashboard-section">
+          <h2>Recent Orders</h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order #</th>
+                  <th>Customer</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% recentOrders.forEach(order => { %>
+                  <tr>
+                    <td><%= order.orderNumber %></td>
+                    <td><%= order.user.name %></td>
+                    <td>$<%= order.total.toFixed(2) %></td>
+                    <td><span class="status-badge status-<%= order.status %>"><%= order.status %></span></td>
+                    <td><%= new Date(order.createdAt).toLocaleDateString() %></td>
+                    <td>
+                      <a href="/admin/orders/<%= order._id %>" class="btn-small">View</a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <h2>Low Stock Products</h2>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>SKU</th>
+                  <th>Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% lowStockProducts.forEach(product => { %>
+                  <tr>
+                    <td><%= product.name %></td>
+                    <td><%= product.sku %></td>
+                    <td class="low-stock"><%= product.stock %></td>
+                    <td>
+                      <a href="/admin/products/edit/<%= product._id %>" class="btn-small">Edit</a>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="dashboard-section">
+          <h2>Top Selling Products</h2>
+          <div class="top-products">
+            <% topProducts.forEach(product => { %>
+              <div class="top-product-item">
+                <img src="<%= product.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= product.name %>">
+                <div>
+                  <p><strong><%= product.name %></strong></p>
+                  <p>Sales: <%= product.salesCount %></p>
+                  <p>Revenue: $<%= (product.salesCount * (product.salePrice || product.price)).toFixed(2) %></p>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

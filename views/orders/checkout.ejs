@@ -1,0 +1,180 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+  <h1>Checkout</h1>
+
+  <div class="checkout-content">
+    <form id="checkout-form" class="checkout-form">
+      <section class="checkout-section">
+        <h2>Shipping Address</h2>
+
+        <% if (user.addresses.length > 0) { %>
+          <div class="saved-addresses">
+            <% user.addresses.forEach(address => { %>
+              <label class="address-option">
+                <input type="radio" name="savedAddress" value='<%= JSON.stringify(address) %>'
+                  <%= address.isDefault ? 'checked' : '' %>>
+                <div class="address-card">
+                  <strong><%= address.label %></strong>
+                  <p><%= address.fullName %></p>
+                  <p><%= address.addressLine1 %></p>
+                  <% if (address.addressLine2) { %>
+                    <p><%= address.addressLine2 %></p>
+                  <% } %>
+                  <p><%= address.city %>, <%= address.state %> <%= address.zipCode %></p>
+                  <p><%= address.phone %></p>
+                </div>
+              </label>
+            <% }) %>
+          </div>
+        <% } %>
+
+        <button type="button" class="btn btn-secondary" onclick="toggleNewAddress()">Add New Address</button>
+
+        <div id="new-address-form" style="display: none;">
+          <div class="form-group">
+            <label>Full Name</label>
+            <input type="text" name="fullName">
+          </div>
+          <div class="form-group">
+            <label>Phone</label>
+            <input type="tel" name="phone">
+          </div>
+          <div class="form-group">
+            <label>Address Line 1</label>
+            <input type="text" name="addressLine1">
+          </div>
+          <div class="form-group">
+            <label>Address Line 2</label>
+            <input type="text" name="addressLine2">
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>City</label>
+              <input type="text" name="city">
+            </div>
+            <div class="form-group">
+              <label>State</label>
+              <input type="text" name="state">
+            </div>
+            <div class="form-group">
+              <label>Zip Code</label>
+              <input type="text" name="zipCode">
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="checkout-section">
+        <h2>Payment Method</h2>
+        <div class="payment-methods">
+          <label>
+            <input type="radio" name="paymentMethod" value="credit_card" checked>
+            Credit Card
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="debit_card">
+            Debit Card
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="paypal">
+            PayPal
+          </label>
+          <label>
+            <input type="radio" name="paymentMethod" value="cod">
+            Cash on Delivery
+          </label>
+        </div>
+      </section>
+
+      <button type="submit" class="btn btn-primary btn-block">Place Order</button>
+    </form>
+
+    <div class="order-summary">
+      <h2>Order Summary</h2>
+      <div class="summary-items">
+        <% cart.items.forEach(item => { %>
+          <div class="summary-item">
+            <img src="<%= item.product.images[0]?.url || '/images/placeholder.jpg' %>" alt="<%= item.product.name %>">
+            <div>
+              <p><%= item.product.name %></p>
+              <p>Qty: <%= item.quantity %></p>
+            </div>
+            <p>$<%= (item.price * item.quantity).toFixed(2) %></p>
+          </div>
+        <% }) %>
+      </div>
+      <div class="summary-totals">
+        <div class="summary-row">
+          <span>Subtotal:</span>
+          <span>$<%= cart.subtotal.toFixed(2) %></span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping:</span>
+          <span>$<%= shippingCost.toFixed(2) %></span>
+        </div>
+        <div class="summary-row">
+          <span>Tax:</span>
+          <span>$<%= tax.toFixed(2) %></span>
+        </div>
+        <div class="summary-row total">
+          <span>Total:</span>
+          <span>$<%= total.toFixed(2) %></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleNewAddress() {
+  const form = document.getElementById('new-address-form');
+  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+}
+
+document.getElementById('checkout-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  let shippingAddress;
+  const savedAddressRadio = document.querySelector('input[name="savedAddress"]:checked');
+
+  if (savedAddressRadio) {
+    shippingAddress = savedAddressRadio.value;
+  } else {
+    const form = e.target;
+    shippingAddress = JSON.stringify({
+      fullName: form.fullName.value,
+      phone: form.phone.value,
+      addressLine1: form.addressLine1.value,
+      addressLine2: form.addressLine2.value,
+      city: form.city.value,
+      state: form.state.value,
+      zipCode: form.zipCode.value
+    });
+  }
+
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked').value;
+
+  try {
+    const response = await fetch('/orders/place', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ shippingAddress, paymentMethod })
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      window.location.href = '/orders/confirmation/' + data.orderId;
+    } else {
+      alert(data.message);
+    }
+  } catch (error) {
+    alert('An error occurred. Please try again.');
+  }
+});
+</script>
+
+<%- include('../partials/footer') %>

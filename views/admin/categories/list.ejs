@@ -1,0 +1,80 @@
+<%- include('../../partials/header') %>
+
+<div class="container">
+  <div class="admin-page">
+    <aside class="admin-sidebar">
+      <h2>Admin Panel</h2>
+      <nav class="admin-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/products">Products</a>
+        <a href="/admin/categories" class="active">Categories</a>
+        <a href="/admin/orders">Orders</a>
+        <a href="/admin/customers">Customers</a>
+        <a href="/admin/reviews">Reviews</a>
+      </nav>
+    </aside>
+
+    <div class="admin-content">
+      <h1>Manage Categories</h1>
+
+      <div class="category-form">
+        <h2>Add New Category</h2>
+        <form action="/admin/categories/add" method="POST">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Name</label>
+              <input type="text" name="name" required>
+            </div>
+            <div class="form-group">
+              <label>Slug</label>
+              <input type="text" name="slug" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" name="description">
+          </div>
+          <div class="form-group">
+            <label>Parent Category</label>
+            <select name="parent">
+              <option value="">None (Main Category)</option>
+              <% categories.filter(c => !c.parent).forEach(category => { %>
+                <option value="<%= category._id %>"><%= category.name %></option>
+              <% }) %>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Add Category</button>
+        </form>
+      </div>
+
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Slug</th>
+              <th>Parent</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% categories.forEach(category => { %>
+              <tr>
+                <td><%= category.name %></td>
+                <td><%= category.slug %></td>
+                <td><%= category.parent ? category.parent.name : 'None' %></td>
+                <td>
+                  <span class="status-badge <%= category.isActive ? 'status-active' : 'status-inactive' %>">
+                    <%= category.isActive ? 'Active' : 'Inactive' %>
+                  </span>
+                </td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../../partials/footer') %>

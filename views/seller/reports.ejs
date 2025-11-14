@@ -1,0 +1,129 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="admin-page">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Sales Reports & Analytics</h1>
+            </div>
+
+            <!-- Summary Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Products</h3>
+                    <div class="stat-number"><%= totalProducts %></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Sales</h3>
+                    <div class="stat-number"><%= totalSales %></div>
+                    <p>Items sold</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Total Revenue</h3>
+                    <div class="stat-number">$<%= totalRevenue %></div>
+                    <p>Gross revenue</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Low Stock Items</h3>
+                    <div class="stat-number" style="color: var(--danger-color);">
+                        <%= lowStockProducts.length %>
+                    </div>
+                    <p>Need attention</p>
+                </div>
+            </div>
+
+            <!-- Top Products -->
+            <div class="dashboard-section">
+                <h2>Top Selling Products</h2>
+                <% if (topProducts && topProducts.length > 0) { %>
+                    <div class="top-products">
+                        <% topProducts.forEach(product => { %>
+                            <div class="top-product-item">
+                                <% if (product.images && product.images.length > 0) { %>
+                                    <img src="<%= product.images[0].url %>" alt="<%= product.name %>">
+                                <% } else { %>
+                                    <div style="width: 80px; height: 80px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                        No Image
+                                    </div>
+                                <% } %>
+                                <div style="flex: 1;">
+                                    <h4><%= product.name %></h4>
+                                    <p>SKU: <%= product.sku %></p>
+                                    <p>Price: $<%= product.price.toFixed(2) %></p>
+                                </div>
+                                <div style="text-align: right;">
+                                    <strong style="color: var(--primary-color); font-size: 1.2em;">
+                                        <%= product.salesCount || 0 %> sold
+                                    </strong>
+                                    <br>
+                                    <span style="color: var(--success-color);">
+                                        $<%= ((product.salePrice || product.price) * (product.salesCount || 0)).toFixed(2) %>
+                                    </span>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+                <% } else { %>
+                    <p>No sales data available yet.</p>
+                <% } %>
+            </div>
+
+            <!-- Low Stock Products -->
+            <div class="dashboard-section">
+                <h2>Low Stock Products</h2>
+                <% if (lowStockProducts && lowStockProducts.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Current Stock</th>
+                                    <th>Alert Level</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% lowStockProducts.forEach(product => { %>
+                                    <tr>
+                                        <td>
+                                            <strong><%= product.name %></strong>
+                                            <br>
+                                            <small>SKU: <%= product.sku %></small>
+                                        </td>
+                                        <td class="low-stock"><%= product.stock %></td>
+                                        <td><%= product.lowStockThreshold %></td>
+                                        <td>
+                                            <% if (product.stock === 0) { %>
+                                                <span class="status-badge status-inactive">Out of Stock</span>
+                                            <% } else { %>
+                                                <span class="status-badge" style="background: #fef3c7; color: #92400e;">Low Stock</span>
+                                            <% } %>
+                                        </td>
+                                        <td>
+                                            <a href="/seller/products/<%= product._id %>/edit" class="btn-small">Restock</a>
+                                        </td>
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } else { %>
+                    <p>All products are well stocked!</p>
+                <% } %>
+            </div>
+
+            <!-- Sales Chart Placeholder -->
+            <div class="dashboard-section">
+                <h2>Sales Overview (Last 30 Days)</h2>
+                <div style="background: #f8fafc; padding: 40px; text-align: center; border-radius: 8px; border: 2px dashed #cbd5e1;">
+                    <h3 style="color: #64748b; margin-bottom: 10px;">Sales Chart</h3>
+                    <p style="color: #94a3b8;">Sales analytics chart would be displayed here</p>
+                    <p style="color: #94a3b8; font-size: 0.9em;">(This requires chart.js or similar library integration)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %> - Seller Panel</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-top">
+                <div class="logo">
+                    <a href="/seller/dashboard">ShopEase Seller</a>
+                </div>
+                <div class="header-actions">
+                    <% if (user && user.isAuthenticated) { %>
+                        <span>Welcome, <%= userName %>!</span>
+                        <div class="user-menu">
+                            <span class="action-link">Account ▼</span>
+                            <div class="dropdown">
+                                <a href="/seller/profile">Profile</a>
+                                <a href="/seller/dashboard">Dashboard</a>
+                                <a href="/">Store Front</a>
+                                <a href="/auth/logout">Logout</a>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            
+            <nav class="main-nav">
+                <ul>
+                    <li><a href="/seller/dashboard" class="<%= title === 'Seller Dashboard' ? 'active' : '' %>">Dashboard</a></li>
+                    <li><a href="/seller/products" class="<%= title === 'My Products' ? 'active' : '' %>">Products</a></li>
+                    <li><a href="/seller/orders" class="<%= title === 'My Orders' ? 'active' : '' %>">Orders</a></li>
+                    <li><a href="/seller/reports" class="<%= title === 'Seller Reports' ? 'active' : '' %>">Reports</a></li>
+                    <li><a href="/seller/profile" class="<%= title === 'Seller Profile' ? 'active' : '' %>">Profile</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <main class="main-content">
+            <% if (message) { %>
+                <div class="alert" style="background-color: #d1fae5; color: #065f46; padding: 12px; margin-bottom: 20px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+            
+            <% if (error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <%- body %>
+        </main>
+    </div>
+
+    <script src="/js/main.js"></script>
+</body>
+</html>

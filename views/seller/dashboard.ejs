@@ -1,0 +1,36 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <h1>Seller Dashboard</h1>
+    
+    <% if (typeof message !== 'undefined' && message) { %>
+        <div class="alert alert-success">
+            <%= message %>
+        </div>
+    <% } %>
+    
+    <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert alert-error">
+            <%= error %>
+        </div>
+    <% } %>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>Total Products</h3>
+            <div class="stat-number"><%= typeof productCount !== 'undefined' ? productCount : 0 %></div>
+        </div>
+        <div class="stat-card">
+            <h3>Total Sales</h3>
+            <div class="stat-number"><%= typeof salesCount !== 'undefined' ? salesCount : 0 %></div>
+        </div>
+    </div>
+
+    <div class="dashboard-actions">
+        <a href="/seller/products/new" class="btn btn-primary">Add New Product</a>
+        <a href="/seller/products" class="btn btn-secondary">View Products</a>
+        <a href="/seller/orders" class="btn btn-secondary">View Orders</a>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

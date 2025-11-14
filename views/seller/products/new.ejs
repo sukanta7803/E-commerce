@@ -1,0 +1,134 @@
+<%- include('../../partials/header') %>
+
+<div class="container">
+    <div class="admin-page">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h1>Add New Product</h1>
+                <a href="/seller/products" class="btn btn-secondary">Back to Products</a>
+            </div>
+
+            <!-- Safe message display -->
+            <% if (typeof message !== 'undefined' && message) { %>
+                <div class="alert" style="background-color: #d1fae5; color: #065f46; padding: 12px; margin-bottom: 20px; border-radius: 8px;">
+                    <%= message %>
+                </div>
+            <% } %>
+            
+            <!-- Safe error display -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="alert alert-error">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <div class="admin-form">
+                <form action="/seller/products" method="POST">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="name">Product Name *</label>
+                            <input type="text" id="name" name="name" required value="<%= (product && product.name) ? product.name : '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="slug">Slug *</label>
+                            <input type="text" id="slug" name="slug" required value="<%= (product && product.slug) ? product.slug : '' %>">
+                            <small>URL-friendly version of the name (auto-generated)</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description *</label>
+                        <textarea id="description" name="description" rows="4" required><%= (product && product.description) ? product.description : '' %></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="shortDescription">Short Description</label>
+                        <textarea id="shortDescription" name="shortDescription" rows="2"><%= (product && product.shortDescription) ? product.shortDescription : '' %></textarea>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price">Price ($) *</label>
+                            <input type="number" id="price" name="price" step="0.01" min="0" required value="<%= (product && product.price) ? product.price : '' %>">
+                        </div>
+                        <div class="form-group">
+                            <label for="salePrice">Sale Price ($)</label>
+                            <input type="number" id="salePrice" name="salePrice" step="0.01" min="0" value="<%= (product && product.salePrice) ? product.salePrice : '' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sku">SKU</label>
+                            <input type="text" id="sku" name="sku" value="<%= (product && product.sku) ? product.sku : '' %>">
+                            <small>Leave blank to auto-generate</small>
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Stock Quantity *</label>
+                            <input type="number" id="stock" name="stock" min="0" required value="<%= (product && product.stock) ? product.stock : '0' %>">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="brand">Brand</label>
+                        <input type="text" id="brand" name="brand" value="<%= (product && product.brand) ? product.brand : '' %>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tags">Tags (comma separated)</label>
+                        <input type="text" id="tags" name="tags" value="<%= (product && product.tags) ? (Array.isArray(product.tags) ? product.tags.join(', ') : product.tags) : '' %>">
+                        <small>e.g., electronics, wireless, audio</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="images">Image URLs (one per line) *</label>
+                        <textarea id="images" name="images" rows="4" required placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"><%= (product && product.images) ? product.images.map(img => img.url).join('\n') : '' %></textarea>
+                        <small>Enter 1-6 image URLs, one per line</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="isActive" <%= (product && product.isActive) ? 'checked' : 'checked' %>>
+                                Active Product
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>
+                                <input type="checkbox" name="isFeatured" <%= (product && product.isFeatured) ? 'checked' : '' %>>
+                                Featured Product
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Create Product</button>
+                        <a href="/seller/products" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const nameInput = document.getElementById('name');
+    const slugInput = document.getElementById('slug');
+    
+    // Auto-generate slug from product name
+    nameInput.addEventListener('blur', function() {
+        if (!slugInput.value) {
+            const slug = nameInput.value
+                .toLowerCase()
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
+            slugInput.value = slug;
+        }
+    });
+});
+</script>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,107 @@
+<%- include('../partials/header') %>
+
+<div class="admin-page">
+    <div class="admin-content">
+        <div class="admin-header">
+            <h1>Order Details - <%= order.orderNumber %></h1>
+            <a href="/seller/orders" class="btn btn-secondary">Back to Orders</a>
+        </div>
+
+        <div class="order-detail">
+            <!-- Order Info -->
+            <div class="order-number">
+                Order Number: <strong><%= order.orderNumber %></strong>
+            </div>
+
+            <div class="order-content">
+                <div class="order-main">
+                    <!-- Order Items -->
+                    <div class="info-box">
+                        <h3>Order Items</h3>
+                        <% order.items.forEach(item => { %>
+                            <div class="order-item">
+                                <% if (item.product && item.product.images && item.product.images.length > 0) { %>
+                                    <img src="<%= item.product.images[0].url %>" alt="<%= item.name %>">
+                                <% } else { %>
+                                    <div style="width: 80px; height: 80px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 8px;">
+                                        No Image
+                                    </div>
+                                <% } %>
+                                <div style="flex: 1;">
+                                    <h4><%= item.name %></h4>
+                                    <p>Quantity: <%= item.quantity %></p>
+                                    <p>Price: $<%= item.price.toFixed(2) %></p>
+                                    <p>Subtotal: $<%= (item.quantity * item.price).toFixed(2) %></p>
+                                </div>
+                            </div>
+                        <% }) %>
+                    </div>
+
+                    <!-- Shipping Address -->
+                    <div class="info-box">
+                        <h3>Shipping Address</h3>
+                        <p><strong><%= order.shippingAddress.fullName %></strong></p>
+                        <p><%= order.shippingAddress.addressLine1 %></p>
+                        <% if (order.shippingAddress.addressLine2) { %>
+                            <p><%= order.shippingAddress.addressLine2 %></p>
+                        <% } %>
+                        <p><%= order.shippingAddress.city %>, <%= order.shippingAddress.state %> <%= order.shippingAddress.zipCode %></p>
+                        <p><%= order.shippingAddress.country %></p>
+                        <p>Phone: <%= order.shippingAddress.phone %></p>
+                    </div>
+                </div>
+
+                <div class="order-sidebar">
+                    <!-- Order Summary -->
+                    <div class="info-box">
+                        <h3>Order Summary</h3>
+                        <div class="summary-row">
+                            <span>Subtotal:</span>
+                            <span>$<%= order.subtotal.toFixed(2) %></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping:</span>
+                            <span>$<%= order.shippingCost.toFixed(2) %></span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tax:</span>
+                            <span>$<%= order.tax.toFixed(2) %></span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total:</span>
+                            <span>$<%= order.total.toFixed(2) %></span>
+                        </div>
+                    </div>
+
+                    <!-- Order Status -->
+                    <div class="info-box">
+                        <h3>Order Status</h3>
+                        <div class="status-timeline">
+                            <% const statuses = ['pending', 'processing', 'shipped', 'delivered']; %>
+                            <% statuses.forEach((status, index) => { %>
+                                <div class="status-step <%= index <= statuses.indexOf(order.status) ? 'completed' : '' %>">
+                                    <div class="step-icon">
+                                        <%= index + 1 %>
+                                    </div>
+                                    <div class="step-label" style="text-transform: capitalize;"><%= status %></div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    </div>
+
+                    <!-- Customer Info -->
+                    <div class="info-box">
+                        <h3>Customer Information</h3>
+                        <p><strong>Name:</strong> <%= order.user.name %></p>
+                        <p><strong>Email:</strong> <%= order.user.email %></p>
+                        <% if (order.user.phone) { %>
+                            <p><strong>Phone:</strong> <%= order.user.phone %></p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %> - Shopfinity</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-top">
+        <div class="logo">
+          <a href="/">Shopfinity</a>
+        </div>
+        <div class="search-bar">
+            <% if (user.role === 'customer') { %>
+          <form action="/products" method="GET">
+            <input type="text" name="search" placeholder="Search products..." value="<%= typeof query !== 'undefined' ? query.search || '' : '' %>">
+            <button type="submit">Search</button>
+          </form>
+           <% } %>
+        </div>
+        <div class="header-actions">
+          <% if (user && user.isAuthenticated) { %>
+            <% if (user.role === 'customer') { %>
+              <a href="/user/wishlist" class="action-link">Wishlist</a>
+              <a href="/cart" class="action-link cart-link">
+                Cart
+                <% if (cartItemCount > 0) { %>
+                  <span class="cart-count"><%= cartItemCount %></span>
+                <% } %>
+              </a>
+              <a href="/user/profile" class="action-link"><%= user.name %> </a>
+            <% } %>
+            <% if (user.role === 'seller') { %>
+              <a href="/seller/dashboard" class="action-link">Dashboard</a>
+              <a href="/seller/products/new" class="action-link">Add Product</a>
+                  <a href="/seller/products" class="action-link">My Products</a>
+                  <a href="/seller/orders" class="action-link">Orders</a>
+                  <a href="/seller/reports" class="action-link">Reports</a>
+                   <a href="/auth/logout" class="action-link">Logout</a>
+            <% } %>
+
+            <div class="user-menu">
+              <span class="action-link">
+              <!-- <div class="dropdown">
+                
+                
+                <% if (user.role === 'customer') { %>
+                  <a href="/orders">My Orders</a>
+                  <a href="/user/addresses">Addresses</a>
+                  <a href="/user/wishlist">Wishlist</a>
+                <% } %>
+                
+                <% if (user.role === 'seller') { %>
+                  <a href="/seller/dashboard">Seller Dashboard</a>
+                  <a href="/seller/products">My Products</a>
+                  <a href="/seller/orders">Orders</a>
+                  <a href="/seller/reports">Reports</a>
+                <% } %>
+                
+                <div class="dropdown-divider"></div>
+                <a href="/auth/logout">Logout</a>
+              </div> -->
+            </div>
+          <% } else { %>
+            <a href="/auth/login" class="action-link">Login</a>
+            <a href="/auth/register" class="action-link">Register</a>
+            <a href="/auth/sellerRegister" class="action-link">Sell on ShopEase</a>
+          <% } %>
+        </div>
+      </div>
+        <% if (user.role === 'customer') { %>
+      <nav class="main-nav">
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/products">All Products</a></li>
+          <li><a href="/products?sort=newest">New Arrivals</a></li>
+          <li><a href="/products?sort=popular">Best Sellers</a></li>
+          <li><a href="/products?sort=price-asc">Deals</a></li>
+        </ul>
+      </nav>
+       <% } %>
+    </div>
+  </header>
+  
+  <% if (success) { %>
+    <div class="flash-message flash-success">
+      <div class="container">
+        <p><%= success %></p>
+      </div>
+    </div>
+  <% } %>
+  
+  <% if (error) { %>
+    <div class="flash-message flash-error">
+      <div class="container">
+        <p><%= error %></p>
+      </div>
+    </div>
+  <% } %>
+
+  <main class="main-content">
