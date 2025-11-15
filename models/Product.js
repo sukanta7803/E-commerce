@@ -50,10 +50,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     min: 0
   },
-  // Make SKU optional and remove unique constraint
-  sku: {
-    type: String
-  },
+  // // Make SKU optional and remove unique constraint
+  // sku: {
+  //   type: String
+  // },
   stock: {
     type: Number,
     required: true,
