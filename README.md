@@ -12,7 +12,6 @@ A full-featured e-commerce website built with Node.js, Express, MongoDB, and EJS
 - **Order Management** - Complete checkout process with order tracking
 - **Product Reviews** - Rate and review purchased products
 - **Address Management** - Multiple shipping addresses
-- **Loyalty Points** - Earn rewards on purchases
 
 ### 🏪 Seller Features
 - **Seller Dashboard** - Overview of sales and performance
@@ -25,7 +24,7 @@ A full-featured e-commerce website built with Node.js, Express, MongoDB, and EJS
 
 ## 🚀 Live Demo
 
-**Live Website:** [https://shopease.onrender.com](https://e-commerce-wkby.onrender.com)
+**Live Website:** [https://shopfinity.onrender.com](https://e-commerce-wkby.onrender.com)
 
 ## 🛠️ Technology Stack
 
