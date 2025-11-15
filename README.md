@@ -25,7 +25,7 @@ A full-featured e-commerce website built with Node.js, Express, MongoDB, and EJS
 
 ## 🚀 Live Demo
 
-**Live Website:** [https://shopease.onrender.com](https://shopease.onrender.com)
+**Live Website:** [https://shopease.onrender.com](https://e-commerce-wkby.onrender.com)
 
 ## 🛠️ Technology Stack
 
