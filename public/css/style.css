@@ -26,7 +26,9 @@ body {
   color: var(--black);
   background-color: var(--white);
 }
-
+a {
+  text-decoration: none;
+}
 .container {
   max-width: 1200px;
   margin: 0 auto;
